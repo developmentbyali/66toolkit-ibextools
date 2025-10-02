@@ -20,6 +20,12 @@
     </div>
 
     <div class="form-group custom-control custom-switch">
+        <input id="categories_collapsible_is_enabled" name="categories_collapsible_is_enabled" type="checkbox" class="custom-control-input" <?= settings()->tools->categories_collapsible_is_enabled ? 'checked="checked"' : null?>>
+        <label class="custom-control-label" for="categories_collapsible_is_enabled"><i class="fas fa-fw fa-sm fa-compress-arrows-alt text-muted mr-1"></i> <?= l('admin_settings.tools.categories_collapsible_is_enabled') ?></label>
+        <small class="form-text text-muted"><?= l('admin_settings.tools.categories_collapsible_is_enabled_help') ?></small>
+    </div>
+
+    <div class="form-group custom-control custom-switch">
         <input id="extra_content_is_enabled" name="extra_content_is_enabled" type="checkbox" class="custom-control-input" <?= settings()->tools->extra_content_is_enabled ? 'checked="checked"' : null?>>
         <label class="custom-control-label" for="extra_content_is_enabled"><i class="fas fa-fw fa-sm fa-paragraph text-muted mr-1"></i> <?= l('admin_settings.tools.extra_content_is_enabled') ?></label>
     </div>
@@ -85,14 +91,25 @@
             <?php $tools_category = $tool_category_properties['type'] == 'default' ? require APP_PATH . 'includes/tools/' . $tool_category . '.php' : require \Altum\Plugin::get($tool_category_properties['type'] . '-tools')->path . 'includes/tools/' . $tool_category . '.php' ?>
 
             <div class="mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h4 class="h6"><?= l('tools.' . $tool_category) . ' (' . count($tools_category) . ')' ?></h4>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h4 class="h6"><?= l('tools.' . $tool_category) . ' (' . count($tools_category) . ')' ?></h4>
 
-                    <div>
-                        <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" title="<?= l('global.select_all') ?>" data-tooltip-hide-on-click onclick="document.querySelectorAll(`[data-tool-category='<?= $tool_category ?>']`).forEach(element => element.checked ? null : element.checked = true)"><i class="fas fa-fw fa-check-square"></i></button>
-                        <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" title="<?= l('global.deselect_all') ?>" data-tooltip-hide-on-click onclick="document.querySelectorAll(`[data-tool-category='<?= $tool_category ?>']`).forEach(element => element.checked ? element.checked = false : null)"><i class="fas fa-fw fa-minus-square"></i></button>
-                    </div>
-                </div>
+                            <div class="d-flex align-items-center">
+                                <div class="mr-2">
+                                    <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" title="<?= l('global.select_all') ?>" data-tooltip-hide-on-click onclick="document.querySelectorAll(`[data-tool-category='<?= $tool_category ?>']`).forEach(element => element.checked ? null : element.checked = true)"><i class="fas fa-fw fa-check-square"></i></button>
+                                    <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" title="<?= l('global.deselect_all') ?>" data-tooltip-hide-on-click onclick="document.querySelectorAll(`[data-tool-category='<?= $tool_category ?>']`).forEach(element => element.checked ? element.checked = false : null)"><i class="fas fa-fw fa-minus-square"></i></button>
+                                </div>
+
+                                <?php /* determine existing per-category collapsible setting or fallback to developer default */ ?>
+                                <?php $categories_collapsible_settings = isset(settings()->tools->categories_collapsible) ? (array) settings()->tools->categories_collapsible : []; ?>
+                                <?php $category_collapsible_checked = array_key_exists($tool_category, $categories_collapsible_settings) ? (bool) $categories_collapsible_settings[$tool_category] : (isset($tool_category_properties['collapsible']) && $tool_category_properties['collapsible']); ?>
+
+                                <div class="custom-control custom-switch ml-3">
+                                    <input id="categories_collapsible_<?= $tool_category ?>" name="categories_collapsible[]" value="<?= $tool_category ?>" type="checkbox" class="custom-control-input" <?= $category_collapsible_checked ? 'checked="checked"' : null ?>>
+                                    <label class="custom-control-label" for="categories_collapsible_<?= $tool_category ?>"><?= l('admin_settings.tools.category_collapsible') ?></label>
+                                </div>
+                            </div>
+                        </div>
 
                 <div class="row">
                     <?php foreach($tools_category as $key => $value): ?>

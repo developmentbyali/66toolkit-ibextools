@@ -22,6 +22,7 @@ $categories = [
         'color' => '#d72cef', // pink
         'faded_color' => '#f5d2fe', // pink
         'icon' => 'fas fa-check-square',
+    'collapsible' => false,
     ],
 
     'text_tools' => [
@@ -29,6 +30,7 @@ $categories = [
         'color' => '#64748b', // grey
         'faded_color' => '#dbeaff', // grey
         'icon' => 'fas fa-font',
+        'collapsible' => false,
     ],
 
     'converter_tools' => [
@@ -36,6 +38,7 @@ $categories = [
         'color' => '#10b981', // emerald
         'faded_color' => '#c0ffea', // emerald
         'icon' => 'fas fa-exchange-alt',
+        'collapsible' => false,
     ],
 
     'generator_tools' => [
@@ -43,6 +46,7 @@ $categories = [
         'color' => '#0ea5e9', // sky
         'faded_color' => '#c9eeff', // sky
         'icon' => 'fas fa-cogs',
+        'collapsible' => false,
     ],
 
     'developer_tools' => [
@@ -50,6 +54,7 @@ $categories = [
         'color' => '#3b82f6', // blue
         'faded_color' => '#ccdfff', // blue
         'icon' => 'fas fa-code',
+        'collapsible' => false,
     ],
 
     'image_manipulation_tools' => [
@@ -57,6 +62,7 @@ $categories = [
         'color' => '#f97316', // orange
         'faded_color' => '#ffd5b7', // orange
         'icon' => 'fas fa-image',
+        'collapsible' => false,
     ],
 
     'unit_converter_tools' => [
@@ -64,6 +70,7 @@ $categories = [
         'color' => '#f43f5e', // rose
         'faded_color' => '#ffd1d9', // rose
         'icon' => 'fas fa-ruler-combined',
+        'collapsible' => false,
     ],
 
     'time_converter_tools' => [
@@ -71,6 +78,7 @@ $categories = [
         'color' => '#32758c', // green something
         'faded_color' => '#c9eefb', // green something
         'icon' => 'fas fa-clock',
+        'collapsible' => false,
     ],
 
     'data_converter_tools' => [
@@ -78,6 +86,7 @@ $categories = [
         'color' => '#43571d', // olive
         'faded_color' => '#e4f6c1', // olive
         'icon' => 'fas fa-database',
+        'collapsible' => false,
     ],
 
     'color_converter_tools' => [
@@ -85,6 +94,7 @@ $categories = [
         'color' => '#16a34a', // green (distinct yet harmonious with emerald and olive)
         'faded_color' => '#bfffc9', // soft green tint
         'icon' => 'fas fa-palette',
+        'collapsible' => false,
     ],
 
     'misc_tools' => [
@@ -92,6 +102,7 @@ $categories = [
         'color' => '#a855f7', // purple
         'faded_color' => '#e4cdfa', // purple
         'icon' => 'fas fa-tools',
+        'collapsible' => false,
     ],
 ];
 

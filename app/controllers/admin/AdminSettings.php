@@ -1687,10 +1687,18 @@ class AdminSettings extends Controller {
                 }
             }
 
+            /* Process per-category collapsible settings (checkbox list) */
+            $categories_collapsible = [];
+            foreach(require APP_PATH . 'includes/tools/categories.php' as $tool_category => $tool_category_properties) {
+                $categories_collapsible[$tool_category] = in_array($tool_category, $_POST['categories_collapsible'] ?? []);
+            }
+
             $value = json_encode([
                 'available_tools_count' => $available_tools_count,
                 'categories_pages_is_enabled' => isset($_POST['categories_pages_is_enabled']),
                 'categories_expanded_is_enabled' => isset($_POST['categories_expanded_is_enabled']),
+                'categories_collapsible_is_enabled' => isset($_POST['categories_collapsible_is_enabled']),
+                'categories_collapsible' => $categories_collapsible,
                 'extra_content_is_enabled' => isset($_POST['extra_content_is_enabled']),
                 'share_is_enabled' => isset($_POST['share_is_enabled']),
                 'popular_widget_is_enabled' => isset($_POST['popular_widget_is_enabled']),

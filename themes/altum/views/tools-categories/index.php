@@ -103,6 +103,9 @@
         <?php $tool_category = $data->category; $tool_category_properties = $data->category_properties ?>
             <?php ${$tool_category} = get_tools_section_output($tool_category, $this->user, $data, $tool_category_properties); ?>
 
+            <?php $global_collapsible = isset(settings()->tools->categories_collapsible_is_enabled) && settings()->tools->categories_collapsible_is_enabled; ?>
+            <?php $per_category_collapsible = isset(settings()->tools->categories_collapsible->{$tool_category}) ? settings()->tools->categories_collapsible->{$tool_category} : (isset($tool_category_properties['collapsible']) && $tool_category_properties['collapsible']); ?>
+            <?php $is_collapsible = $global_collapsible && $per_category_collapsible; ?>
             <div class="card mt-5 mb-4 position-relative" data-category="<?= $tool_category ?>" style="background: <?= $tool_category_properties['color'] ?>; border-color: <?= $tool_category_properties['color'] ?>; color: white;">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -117,12 +120,18 @@
                             </div>
                         </div>
 
-                        <!-- collapse toggle removed to make categories always visible -->
+                        <?php if($is_collapsible): ?>
+                            <button class="btn btn-link p-0 ml-3" type="button" data-toggle="collapse" data-target="#<?= $tool_category . '_tools' ?>" aria-expanded="false" aria-controls="<?= $tool_category . '_tools' ?>">
+                                <i class="fas fa-fw fa-chevron-down"></i>
+                            </button>
+                        <?php else: ?>
+                            <!-- always expanded, no toggle -->
+                        <?php endif ?>
                     </div>
                 </div>
             </div>
 
-            <div id="<?= $tool_category . '_tools' ?>" class="row" data-category-tools>
+            <div id="<?= $tool_category . '_tools' ?>" class="row<?= $is_collapsible ? ' collapse' : '' ?>" data-category-tools>
                 <?php echo ${$tool_category}['enabled_tools_html']; echo ${$tool_category}['disabled_tools_html']; ?>
             </div>
 

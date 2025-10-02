@@ -145,6 +145,12 @@
 
             <?php if(count($data->pages)): ?>
                 <?php foreach($data->pages as $row): ?>
+                    <?php
+                    /* Skip the default credits/branding links (66toolkit / AltumCode) if they exist in pages */
+                    $lower_title = mb_strtolower($row->title);
+                    $lower_url = mb_strtolower($row->url);
+                    if(stripos($lower_title, '66toolkit') !== false || stripos($lower_title, 'altumcode') !== false || stripos($lower_url, 'altum') !== false) continue;
+                    ?>
                     <li class="mb-2 mr-lg-3">
                         <a href="<?= $row->url ?>" target="<?= $row->target ?>">
                             <?php if($row->icon): ?>
@@ -156,6 +162,9 @@
                     </li>
                 <?php endforeach ?>
             <?php endif ?>
+
+            <!-- Custom credit replacing default branding -->
+            <li class="mb-2 mr-lg-3"><span>Built and designed by Andropple Lab</span></li>
         </ul>
     </div>
 

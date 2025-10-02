@@ -147,6 +147,9 @@ class Language {
 
         /* Include the admin language file if needed */
         if(\Altum\Router::$path == 'admin') {
+            /* initialize to avoid undefined variable / unsupported operand types */
+            $admin_language = [];
+
             if(file_exists(self::$path . 'admin/' . $name . '#' . self::$languages[$name]['code'] . '.php')) {
                 $admin_language = require self::$path . 'admin/' . $name . '#' . self::$languages[$name]['code'] . '.php';
             }

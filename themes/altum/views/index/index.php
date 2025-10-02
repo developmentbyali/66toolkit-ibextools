@@ -30,6 +30,36 @@
 
 
 <div class="container">
+    <!-- Categories Section: Home page -->
+    <div class="mb-5">
+        <div class="card border-0 shadow-sm mb-4 p-4 bg-white">
+            <h2 class="h2 mb-4 text-primary text-center">Categories</h2>
+            <div class="row justify-content-center">
+                <?php foreach(require APP_PATH . 'includes/tools/categories.php' as $cat_key => $cat_props): ?>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3 d-flex align-items-stretch">
+                        <a href="#category-<?= $cat_key ?>"
+                           class="category-scroll-link card w-100 border-0 shadow-sm text-center py-3 px-2"
+                           style="background:<?= $cat_props['faded_color'] ?? '#f5f5f5' ?>; border-radius:1.25rem; text-decoration:none; color:#222; transition:box-shadow .2s; font-weight:500;">
+                            <div class="d-flex justify-content-center align-items-center mb-2">
+                                <span class="d-flex align-items-center justify-content-center" style="width:40px; height:40px; background:<?= $cat_props['color'] ?? '#007bff' ?>; border-radius:50%;">
+                                    <i class="<?= $cat_props['icon'] ?? 'fas fa-tools' ?> fa-fw text-white"></i>
+                                </span>
+                            </div>
+                            <span><?= l('tools.' . $cat_key) ?></span>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <style>
+            .category-scroll-link:hover {
+                box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+                text-decoration: none;
+                color: #222;
+            }
+        </style>
+    </div>
+
     <div class="mb-5">
         <h1 class="h3 mb-4"><?= l('tools.popular_tools') ?></h1>
         <?= $this->views['popular_tools'] ?>
@@ -106,7 +136,24 @@
             <?php ${$tool_category} = get_tools_section_output($tool_category, $this->user, $data, $tool_category_properties); ?>
             <?php if(empty(${$tool_category}['enabled_tools_html']) && empty(${$tool_category}['disabled_tools_html'])) continue; ?>
 
-            <div class="card mt-5 mb-4 position-relative" data-category="<?= $tool_category ?>" style="background: <?= $tool_category_properties['color'] ?>; border-color: <?= $tool_category_properties['color'] ?>; color: white;" <?= settings()->tools->categories_expanded_is_enabled ? null : 'data-aos="fade-up"' ?>>
+            <?php $global_collapsible = isset(settings()->tools->categories_collapsible_is_enabled) && settings()->tools->categories_collapsible_is_enabled; ?>
+            <?php $per_category_collapsible = isset(settings()->tools->categories_collapsible->{$tool_category}) ? settings()->tools->categories_collapsible->{$tool_category} : (isset($tool_category_properties['collapsible']) && $tool_category_properties['collapsible']); ?>
+            <?php $is_collapsible = $global_collapsible && $per_category_collapsible; ?>
+            <div class="card mt-5 mb-4 position-relative" id="category-<?= $tool_category ?>" data-category="<?= $tool_category ?>" style="background: <?= $tool_category_properties['color'] ?>; border-color: <?= $tool_category_properties['color'] ?>; color: white;" <?= settings()->tools->categories_expanded_is_enabled ? null : 'data-aos="fade-up"' ?>>
+<?php ob_start() ?>
+<script>
+document.querySelectorAll('.category-scroll-link').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var targetId = this.getAttribute('href').replace('#','');
+        var target = document.getElementById(targetId);
+        if(target) {
+            target.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+    });
+});
+</script>
+<?php \Altum\Event::add_content(ob_get_clean(), 'javascript') ?>
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex text-truncate">
@@ -120,8 +167,12 @@
                             </div>
                         </div>
 
-                        <?php if(!settings()->tools->categories_pages_is_enabled): ?>
-                            <!-- collapse toggle removed to make categories always visible -->
+                        <?php if($is_collapsible): ?>
+                            <button class="btn btn-link p-0 ml-3" type="button" data-toggle="collapse" data-target="#<?= $tool_category . '_tools' ?>" aria-expanded="false" aria-controls="<?= $tool_category . '_tools' ?>">
+                                <i class="fas fa-fw fa-chevron-down"></i>
+                            </button>
+                        <?php elseif(!settings()->tools->categories_pages_is_enabled): ?>
+                            <!-- always expanded, no toggle -->
                         <?php else: ?>
                             <div class="ml-3">
                                 <a href="<?= url(str_replace('_', '-', $tool_category)) ?>" class="stretched-link" style="color: white !important;">
@@ -134,7 +185,7 @@
             </div>
 
             <?php if(!settings()->tools->categories_pages_is_enabled): ?>
-                <div id="<?= $tool_category . '_tools' ?>" class="row" data-category-tools>
+                <div id="<?= $tool_category . '_tools' ?>" class="row<?= $is_collapsible ? ' collapse' : '' ?>" data-category-tools>
                     <?php echo ${$tool_category}['enabled_tools_html']; echo ${$tool_category}['disabled_tools_html']; ?>
                 </div>
             <?php endif ?>
@@ -286,6 +337,23 @@
             </script>
             <?php \Altum\Event::add_content(ob_get_clean(), 'javascript') ?>
         <?php endif ?>
+        
+        <!-- Back to top button -->
+        <button id="back_to_top" class="btn btn-primary" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+        <?php ob_start() ?>
+        <script>
+            (function(){
+                const btn = document.getElementById('back_to_top');
+                window.addEventListener('scroll', () => {
+                    if(window.scrollY > 400) btn.classList.add('show'); else btn.classList.remove('show');
+                });
+                btn.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            })();
+        </script>
+        <?php \Altum\Event::add_content(ob_get_clean(), 'javascript') ?>
     </div>
 </div>
 
@@ -491,6 +559,12 @@
 <?php ob_start() ?>
 <link rel="stylesheet" href="<?= ASSETS_FULL_URL . 'css/libraries/aos.min.css?v=' . PRODUCT_CODE ?>">
 <link rel="stylesheet" href="<?= ASSETS_FULL_URL . 'css/_tools_categories_fix.css?v=' . PRODUCT_CODE ?>">
+<style>
+    /* Back to top button styles */
+    #back_to_top{position:fixed;right:20px;bottom:20px;z-index:9999;display:none;width:44px;height:44px;border-radius:50%;align-items:center;justify-content:center;border:0}
+    #back_to_top.show{display:flex}
+    #back_to_top i{transform:translateY(-1px)}
+</style>
 <?php \Altum\Event::add_content(ob_get_clean(), 'head') ?>
 
 <?php ob_start() ?>
