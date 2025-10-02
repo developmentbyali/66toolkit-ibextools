@@ -86,7 +86,7 @@
                         'description' => $description,
                         'tool_category' => $file_name,
                         'category_properties' => $data->category_properties ?? null,
-                        'is_animated' => !settings()->tools->categories_expanded_is_enabled
+                        'is_animated' => !(isset(settings()->tools->categories_expanded_is_enabled) ? settings()->tools->categories_expanded_is_enabled : false)
                     ]); ?>
 
                     <?php
@@ -121,11 +121,7 @@
                         </div>
 
                         <?php if(!settings()->tools->categories_pages_is_enabled): ?>
-                            <div class="ml-3">
-                                <a href="#" class="stretched-link" data-toggle="collapse" data-target="<?= '#' . $tool_category . '_tools' ?>" style="color: white !important;" role="button" aria-expanded="false" aria-controls="<?=  $tool . '_tools' ?>" data-category-collapse-button>
-                                    <i class="fas fa-fw fa-lg fa-circle-chevron-down"></i>
-                                </a>
-                            </div>
+                            <!-- collapse toggle removed to make categories always visible -->
                         <?php else: ?>
                             <div class="ml-3">
                                 <a href="<?= url(str_replace('_', '-', $tool_category)) ?>" class="stretched-link" style="color: white !important;">
@@ -138,7 +134,7 @@
             </div>
 
             <?php if(!settings()->tools->categories_pages_is_enabled): ?>
-                <div id="<?= $tool_category . '_tools' ?>" class="row collapse <?= settings()->tools->categories_expanded_is_enabled ? 'show' : null ?>" data-category-tools>
+                <div id="<?= $tool_category . '_tools' ?>" class="row" data-category-tools>
                     <?php echo ${$tool_category}['enabled_tools_html']; echo ${$tool_category}['disabled_tools_html']; ?>
                 </div>
             <?php endif ?>
@@ -161,11 +157,6 @@
                 /* Cache all data-category-tools elements */
                 const data_category_tools_elements = [
                     ...tools_element.querySelectorAll('[data-category-tools]')
-                ];
-
-                /* Cache all data-category-collapse-button elements */
-                const data_category_collapse_button_elements = [
-                    ...tools_element.querySelectorAll('[data-category-collapse-button]')
                 ];
 
                 /* Cache all data-category headers */
@@ -232,15 +223,7 @@
                                 }
                             });
 
-                            data_category_collapse_button_elements.forEach(element => {
-                                if (string.length) {
-                                    element.classList.add('d-none');
-                                    element.classList.remove('stretched-link');
-                                } else {
-                                    element.classList.remove('d-none');
-                                    element.classList.add('stretched-link');
-                                }
-                            });
+                            /* collapse buttons were removed from the markup - nothing to toggle here */
 
                             /* Hide header sections if searching */
                             data_category_header_elements.forEach(element => {
@@ -507,6 +490,7 @@
 
 <?php ob_start() ?>
 <link rel="stylesheet" href="<?= ASSETS_FULL_URL . 'css/libraries/aos.min.css?v=' . PRODUCT_CODE ?>">
+<link rel="stylesheet" href="<?= ASSETS_FULL_URL . 'css/_tools_categories_fix.css?v=' . PRODUCT_CODE ?>">
 <?php \Altum\Event::add_content(ob_get_clean(), 'head') ?>
 
 <?php ob_start() ?>

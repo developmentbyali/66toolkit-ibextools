@@ -1,0 +1,13 @@
+/* Ensure category containers are visible even if .collapse class is present somewhere */
+[data-category-tools].collapse,
+[data-category-tools] .collapse {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Neutralize hidden state for .collapse when applied directly to the row */
+[data-category-tools].collapse:not(.show) {
+    display: flex !important;
+}

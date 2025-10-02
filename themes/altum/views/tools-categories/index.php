@@ -1,3 +1,4 @@
+<!-- Collapsible behavior removed: categories are always visible -->
 <?php defined('ALTUMCODE') || die() ?>
 
 <div class="index-background pt-7 pb-7 mb-4">
@@ -83,7 +84,7 @@
                         'description' => $description,
                         'tool_category' => $file_name,
                         'category_properties' => $data->category_properties ?? null,
-                        'is_animated' => !settings()->tools->categories_expanded_is_enabled
+                        'is_animated' => !(isset(settings()->tools->categories_expanded_is_enabled) ? settings()->tools->categories_expanded_is_enabled : false)
                     ]); ?>
 
                     <?php
@@ -116,18 +117,12 @@
                             </div>
                         </div>
 
-                        <?php if(1 == 2): ?>
-                        <div class="ml-3">
-                            <a href="#" class="stretched-link" data-toggle="collapse" data-target="<?= '#' . $tool_category . '_tools' ?>" style="color: white !important;" role="button" aria-expanded="false" aria-controls="<?=  $tool . '_tools' ?>" data-category-collapse-button>
-                                <i class="fas fa-fw fa-lg fa-circle-chevron-down"></i>
-                            </a>
-                        </div>
-                        <?php endif ?>
+                        <!-- collapse toggle removed to make categories always visible -->
                     </div>
                 </div>
             </div>
 
-            <div id="<?= $tool_category . '_tools' ?>" class="row collapse <?= 1 == 1 || settings()->tools->categories_expanded_is_enabled ? 'show' : null ?>" data-category-tools>
+            <div id="<?= $tool_category . '_tools' ?>" class="row" data-category-tools>
                 <?php echo ${$tool_category}['enabled_tools_html']; echo ${$tool_category}['disabled_tools_html']; ?>
             </div>
 
@@ -144,9 +139,8 @@
             const tools_element = document.querySelector('#tools');
             const search_input_element = document.querySelector('#search input[name="search"]');
 
-            /* Cache references for data-category-tools, data-category-collapse-button, data-category */
+            /* Cache references for data-category-tools and data-category */
             const data_category_tools_elements = [...tools_element.querySelectorAll('[data-category-tools]')];
-            const data_category_collapse_button_elements = [...tools_element.querySelectorAll('[data-category-collapse-button]')];
             const data_category_header_elements = [...tools_element.querySelectorAll('[data-category]')];
 
             /* Build a list of tools, and also map tool IDs & categories to their elements for quick lookup */
@@ -200,26 +194,7 @@
                     }
 
                     timer = setTimeout(() => {
-                        /* Do not use collapse when searching */
-                        data_category_tools_elements.forEach(element => {
-                            if (string.length) {
-                                element.classList.remove('collapse');
-                            } else {
-                                element.classList.add('collapse');
-                            }
-                        });
-
-                        data_category_collapse_button_elements.forEach(element => {
-                            if (string.length) {
-                                element.classList.add('d-none');
-                                element.classList.remove('stretched-link');
-                            } else {
-                                element.classList.remove('d-none');
-                                element.classList.add('stretched-link');
-                            }
-                        });
-
-                        /* Hide header sections if searching */
+                                    /* Hide header sections if searching */
                         data_category_header_elements.forEach(element => {
                             element.removeAttribute('data-aos');
                             if (string.length) {
@@ -331,6 +306,7 @@
 
 <?php ob_start() ?>
 <link rel="stylesheet" href="<?= ASSETS_FULL_URL . 'css/libraries/aos.min.css?v=' . PRODUCT_CODE ?>">
+<link rel="stylesheet" href="<?= ASSETS_FULL_URL . 'css/_tools_categories_fix.css?v=' . PRODUCT_CODE ?>">
 <?php \Altum\Event::add_content(ob_get_clean(), 'head') ?>
 
 <?php ob_start() ?>
